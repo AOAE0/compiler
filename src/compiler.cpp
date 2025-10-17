@@ -23,7 +23,7 @@ void compile(string code,int &row)
 				i++;
 			}
 			if(id=="int"||id=="void"|| id == "if"|| id == "else"|| id == "while"|| id == "break"|| id == "continue"|| id == "return")
-				cout << row << ":'" << id << "':\""<<id<<" \"" << endl;
+				cout << row << ":'" << id << "':\""<<id<<"\"" << endl;
 			else
 				cout << row << ":Ident:\"" << id << "\"" << endl;
 			row++;
@@ -46,13 +46,13 @@ void compile(string code,int &row)
 			if (code[i] == '=')
 			{
 				op = c+code[i];
-				cout<<row<< ":'" << op << "':\"" << op << " \"" << endl;
+				cout<<row<< ":'" << op << "':\"" << op << "\"" << endl;
 				i++;
 			}
 			else
 			{
 				op = c;
-				cout << row << ":'" << op << "':\"" << op << " \"" << endl;
+				cout << row << ":'" << op << "':\"" << op << "\"" << endl;
 			}
 			row++;
 		}
@@ -63,7 +63,7 @@ void compile(string code,int &row)
 			if (code[i + 1] == c)
 			{
 				op += c;
-				cout << row << ":'" << op << "':\"" << op << " \"" << endl;
+				cout << row << ":'" << op << "':\"" << op << "\"" << endl;
 				i += 2;
 			}
 			row++;
@@ -73,25 +73,25 @@ void compile(string code,int &row)
 			i++;
 			if (code[i] == '/')
 			{
-				cout << row << ":'//':\"// \"" << endl;
+				cout << row << ":'//':\"//\"" << endl;
 				row++;
 				while (i < code.length() && code[i] != '\n')
 					i++;
 			}
 			else if (code[i] == '*')
 			{
-				cout << row << ":'/*':\"/* \"" << endl;
+				cout << row << ":'/*':\"/*\"" << endl;
 				row++;
 				i++;
 				while (i < code.length() && (code[i] != '*' || code[i + 1] != '/'))
 					i++;
-				cout << row << ":'*/':\"*/ \"" << endl;
+				cout << row << ":'*/':\"*/\"" << endl;
 				i += 2;
 				row++;
 			}
 			else
 			{
-				cout << row << ":'/'" << ":\"/ \"" << endl;
+				cout << row << ":'/'" << ":\"/\"" << endl;
 				row++;
 			}
 		 
@@ -100,7 +100,7 @@ void compile(string code,int &row)
 		{
 			string op;
 			op = c;
-			cout << row << ":'" << op << "':\"" << op << " \"" << endl;
+			cout << row << ":'" << op << "':\"" << op << "\"" << endl;
 			i++;
 			row++;
 		}
@@ -120,5 +120,6 @@ int main()
 	return 0;
 
 }
+
 
 
