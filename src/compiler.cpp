@@ -118,27 +118,13 @@ int main()
 {	
 	int row = 0;
 	bool notation = 0;
-	//string code = "int main() {\n"
-	//	"   /* comment\n"
-	//	"   int a = 10;\n"
-	//	"   if */ (a >= 10) {\n"
-	//	"       a == a ;\n"
-	//	"   }\n"
-	//	"   return a;\n"
-	//	"}\n";
-	//compile(code, row,notation);
 
-	string code = "int/*Multi-line comment with /*\n"
-		"   * and some tricky symbols: (){};\n"
-		"   // Comment inside multi-line"
-		"* / factorial(int/*comment*/n";
-	compile(code, row, notation);
+	string code;
+	while (getline(cin, code)) {
 
-	//string code;
-	//while (getline(cin, code)) {
-
-	//	compile(code,row,notation);
-	//}
+		compile(code,row,notation);
+	}
 
 	return 0;
 }
+
