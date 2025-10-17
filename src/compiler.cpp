@@ -2,6 +2,8 @@
 using namespace std;
 #include<string>
 
+
+
 void compile(string code,int &row,bool &notation)
 {
 	int i = 0;
@@ -12,8 +14,11 @@ void compile(string code,int &row,bool &notation)
 		{
 			while (i < code.length() && (code[i] != '*' || code[i + 1] != '/'))
 				i++;
-			i += 2;
-			notation = 0;
+			if (code[i] == '*' && code[i + 1] == '/')
+			{
+				i += 2;
+				notation = 0;
+			}
 			continue;
 		}
 
@@ -93,6 +98,7 @@ void compile(string code,int &row,bool &notation)
 			{
 				cout << row << ":'/'" << ":\"/\"" << endl;
 				row++;
+
 			}
 		 
 		}
@@ -122,13 +128,17 @@ int main()
 	//	"}\n";
 	//compile(code, row,notation);
 
-	string code;
-	while (getline(cin, code)) 
-	{
-		cout<<code<<endl;
-		compile(code,row,notation);
-	}
+	string code = "int/*Multi-line comment with /*\n"
+		"   * and some tricky symbols: (){};\n"
+		"   // Comment inside multi-line"
+		"* / factorial(int/*comment*/n";
+	compile(code, row, notation);
+
+	//string code;
+	//while (getline(cin, code)) {
+
+	//	compile(code,row,notation);
+	//}
 
 	return 0;
 }
-
