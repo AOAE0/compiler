@@ -1,10 +1,10 @@
 #include<iostream>
 using namespace std;
+#include<string>
 
-void compile(string code)
+void compile(string code,int &row)
 {
 	int i = 0;
-	int row = 0;
 	while (i<code.length())
 	{
 		char c = code[i];
@@ -120,4 +120,5 @@ int main()
 	return 0;
 
 }
+
 
