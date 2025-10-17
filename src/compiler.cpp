@@ -110,22 +110,14 @@ void compile(string code)
 
 int main()
 {
-	//string code = "int main() {\n"
-	//	"   // comment\n"
-	//	"   int a = 10;\n"
-	//	"   if (a >= 10) {\n"
-	//	"       a = a + 1;\n"
-	//	"   }\n"
-	//	"   return a;\n"
-	//	"}\n";
-
 	string code;
-
-	cin >> code;
-	cout<<code<<endl;
-
-	//compile(code);
+	int row = 0;
+	while (getline(cin, code)) 
+	{
+		compile(code,row);
+	}
 
 	return 0;
 
 }
+
