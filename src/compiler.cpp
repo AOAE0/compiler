@@ -122,8 +122,10 @@ int main()
 	string code;
 
 	cin >> code;
+	cout<<code<<endl;
 
-	compile(code);
+	//compile(code);
 
 	return 0;
+
 }
