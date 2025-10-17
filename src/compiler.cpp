@@ -73,21 +73,15 @@ void compile(string code,int &row)
 			i++;
 			if (code[i] == '/')
 			{
-				cout << row << ":'//':\"//\"" << endl;
-				row++;
 				while (i < code.length() && code[i] != '\n')
 					i++;
 			}
 			else if (code[i] == '*')
 			{
-				cout << row << ":'/*':\"/*\"" << endl;
-				row++;
 				i++;
 				while (i < code.length() && (code[i] != '*' || code[i + 1] != '/'))
 					i++;
-				cout << row << ":'*/':\"*/\"" << endl;
 				i += 2;
-				row++;
 			}
 			else
 			{
@@ -120,6 +114,7 @@ int main()
 	return 0;
 
 }
+
 
 
 
