@@ -123,10 +123,12 @@ int main()
 	//compile(code, row,notation);
 
 	string code;
-	while (getline(cin, code)) {
-
+	while (getline(cin, code)) 
+	{
+		cout<<code<<endl;
 		compile(code,row,notation);
 	}
 
 	return 0;
 }
+
