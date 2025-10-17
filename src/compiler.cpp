@@ -45,7 +45,7 @@ void compile(string code,int &row)
 			i++;
 			if (code[i] == '=')
 			{
-				op = c+code[i];
+				op = code.substr(i-1,2);
 				cout<<row<< ":'" << op << "':\"" << op << "\"" << endl;
 				i++;
 			}
@@ -120,6 +120,7 @@ int main()
 	return 0;
 
 }
+
 
 
 
