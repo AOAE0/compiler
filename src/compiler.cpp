@@ -30,7 +30,7 @@ void compile(string code,int &row,bool &notation)
 		else if (isalpha(c))
 		{
 			string id;
-			while ((i < code.length()) &&isalnum(code[i]))
+			while ((i < code.length()) &&(isalnum(code[i])||code[i]=='_'))
 			{
 				id += code[i];
 				i++;
@@ -127,4 +127,5 @@ int main()
 
 	return 0;
 }
+
 
