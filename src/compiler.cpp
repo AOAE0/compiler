@@ -2,13 +2,21 @@
 using namespace std;
 #include<string>
 
-void compile(string code,int &row)
+void compile(string code,int &row,bool &notation)
 {
 	int i = 0;
 	while (i<code.length())
 	{
 		char c = code[i];
-		 
+		if (notation)
+		{
+			while (i < code.length() && (code[i] != '*' || code[i + 1] != '/'))
+				i++;
+			i += 2;
+			notation = 0;
+			continue;
+		}
+
 		if (isspace(c))
 		{
 			i++;
@@ -78,10 +86,8 @@ void compile(string code,int &row)
 			}
 			else if (code[i] == '*')
 			{
+				notation = 1;
 				i++;
-				while (i < code.length() && (code[i] != '*' || code[i + 1] != '/'))
-					i++;
-				i += 2;
 			}
 			else
 			{
@@ -103,19 +109,24 @@ void compile(string code,int &row)
 }
 
 int main()
-{
-	string code;
+{	
 	int row = 0;
-	while (getline(cin, code)) 
-	{
-		compile(code,row);
+	bool notation = 0;
+	//string code = "int main() {\n"
+	//	"   /* comment\n"
+	//	"   int a = 10;\n"
+	//	"   if */ (a >= 10) {\n"
+	//	"       a == a ;\n"
+	//	"   }\n"
+	//	"   return a;\n"
+	//	"}\n";
+	//compile(code, row,notation);
+
+	string code;
+	while (getline(cin, code)) {
+
+		compile(code,row,notation);
 	}
 
 	return 0;
-
 }
-
-
-
-
-
