@@ -13,148 +13,148 @@ vector<int> errorLines;
 
 void compile(string code, int row, bool& notation)
 {
-	int i = 0;
-	int n = code.length();
-	while (i < n)
-	{
-		char c = code[i];
-		if (notation)
-		{
-			while (i < n && (code[i] != '*' || code[i + 1] != '/'))
-				i++;
-			if (code[i] == '*' && code[i + 1] == '/')
-			{
-				i += 2;
-				notation = 0;
-			}
-			continue;
-		}
+    int i = 0;
+    int n = code.length();
+    while (i < n)
+    {
+        char c = code[i];
+        if (notation)
+        {
+            while (i < n && (code[i] != '*' || code[i + 1] != '/'))
+                i++;
+            if (i + 1 < n && code[i] == '*' && code[i + 1] == '/')
+            {
+                i += 2;
+                notation = 0;
+            }
+            continue;
+        }
 
-		if (isspace(c))
-		{
-			i++;
-			continue;
-		}
-		else if (isalpha(c) || c == '_')
-		{
-			string id;
-			while ((i<n) && (isalnum(code[i]) || code[i] == '_'))
-			{
-				id += code[i];
-				i++;
-			}
-			if (id == "int" || id == "void" || id == "if" || id == "else" || id == "while" || id == "break" || id == "continue" || id == "return")
-			{
-				types.push(4);
-				tokens.push({ id, row });
-			}
-			else
-			{
-				types.push(1);
-				tokens.push({ id, row });
-			}
-		}
-		else if (isdigit(c))
-		{
-			string number;
-			while (i < n && isdigit(code[i]))
-			{
-				number += code[i];
-				i++;
-			}
-			types.push(0);
-			tokens.push({ number, row });
-		}
-		else if (c == '>' || c == '<' || c == '=' || c == '!')
-		{
-			string op;
-			if (i + 1 < n && code[i + 1] == '=')
-			{
-				op = code.substr(i, 2);
-				i += 2;
-			}
-			else
-			{
-				op = c;
-				i++;
-			}
-			types.push(3);
-			tokens.push({ op, row });
-		}
-		else if (c == '|' || c == '&')
-		{
-			string op;
-			if (i + 1 < n && code[i + 1] == c)
-			{
-				op = string(2, c);
-				i += 2;
-			}
-			else
-			{
-				op = string(1, c);
-				i++;
-			}
-			types.push(3);
-			tokens.push({ op, row });
-		}
-		else if (c == '/')
-		{
-			i++;
-			if (code[i] == '/')//单行注释
-			{
-				while (i < n && code[i] != '\n')
-					i++;
-			}
-			else if (code[i] == '*')//多行注释
-			{
-				notation = 1;
-				i++;
-			}
-			else//运算符
-			{
-				types.push(3);
-				tokens.push({ "/", row });
-			}
-		}
-		else if (c == '+' || c == '-' || c == '*' || c == '%')
-		{
-			string op;
-			op = c;
-			types.push(3);
-			tokens.push({ op, row });
-			i++;
-		}
-		else if (c == '(' || c == ')' || c == '{' || c == '}')
-		{
-			string s;
-			s = c;
-			types.push(5);
-			tokens.push({ s, row });
-			i++;
-		}
-		else if (c == ',' || c == ';')
-		{
-			string s;
-			s = c;
-			types.push(6);
-			tokens.push({ s, row });
-			i++;
-		}
-		else
-		{
-			string s;
-			s = c;
-			types.push(7);
-			tokens.push({ s, row });
-			i++;
-		}
-	}
+        if (isspace(c))
+        {
+            i++;
+            continue;
+        }
+        else if (isalpha(c) || c == '_')
+        {
+            string id;
+            while ((i < n) && (isalnum(code[i]) || code[i] == '_'))
+            {
+                id += code[i];
+                i++;
+            }
+            if (id == "int" || id == "void" || id == "if" || id == "else" || id == "while" || id == "break" || id == "continue" || id == "return")
+            {
+                types.push(4);
+                tokens.push({ id, row });
+            }
+            else
+            {
+                types.push(1);
+                tokens.push({ id, row });
+            }
+        }
+        else if (isdigit(c))
+        {
+            string number;
+            while (i < n && isdigit(code[i]))
+            {
+                number += code[i];
+                i++;
+            }
+            types.push(0);
+            tokens.push({ number, row });
+        }
+        else if (c == '>' || c == '<' || c == '=' || c == '!')
+        {
+            string op;
+            if (i + 1 < n && code[i + 1] == '=')
+            {
+                op = code.substr(i, 2);
+                i += 2;
+            }
+            else
+            {
+                op = c;
+                i++;
+            }
+            types.push(3);
+            tokens.push({ op, row });
+        }
+        else if (c == '|' || c == '&')
+        {
+            string op;
+            if (i + 1 < n && code[i + 1] == c)
+            {
+                op = string(2, c);
+                i += 2;
+            }
+            else
+            {
+                op = string(1, c);
+                i++;
+            }
+            types.push(3);
+            tokens.push({ op, row });
+        }
+        else if (c == '/')
+        {
+            i++;
+            if (i < n && code[i] == '/')//单行注释
+            {
+                while (i < n && code[i] != '\n')
+                    i++;
+            }
+            else if (i < n && code[i] == '*')//多行注释
+            {
+                notation = 1;
+                i++;
+            }
+            else//运算符
+            {
+                types.push(3);
+                tokens.push({ "/", row });
+            }
+        }
+        else if (c == '+' || c == '-' || c == '*' || c == '%')
+        {
+            string op;
+            op = c;
+            types.push(3);
+            tokens.push({ op, row });
+            i++;
+        }
+        else if (c == '(' || c == ')' || c == '{' || c == '}')
+        {
+            string s;
+            s = c;
+            types.push(5);
+            tokens.push({ s, row });
+            i++;
+        }
+        else if (c == ',' || c == ';')
+        {
+            string s;
+            s = c;
+            types.push(6);
+            tokens.push({ s, row });
+            i++;
+        }
+        else
+        {
+            string s;
+            s = c;
+            types.push(7);
+            tokens.push({ s, row });
+            i++;
+        }
+    }
 }
 
 
 
 // 语法分析函数
-class Parser 
+class Parser
 {
 private:
     queue<pair<string, int>>& tokens;
@@ -162,25 +162,25 @@ private:
     int currentType;
     bool hasError;
 
-    void advance() 
+    void advance()
     {
-        if (!tokens.empty()) 
+        if (!tokens.empty())
         {
             currentToken = tokens.front();
             tokens.pop();
-			currentType = types.front();
-			types.pop();
+            currentType = types.front();
+            types.pop();
         }
-        else 
+        else
         {
             currentToken.first = "EOF";
             currentType = -1;
         }
     }
 
-    bool match(const string& expected) 
+    bool match(const string& expected)
     {
-        if (currentToken.first == expected) 
+        if (currentToken.first == expected)
         {
             advance();
             return true;
@@ -188,51 +188,52 @@ private:
         return false;
     }
 
-    void expect(const string& expected) 
+    void expect(const string& expected)
     {
-        if (currentToken.first == expected) 
+        if (currentToken.first == expected)
         {
             advance();
         }
         else {
-            if (currentType != -1) 
+            if (currentType != -1)
             { // 不是EOF才记录错误
                 errorLines.push_back(currentToken.second);
             }
             hasError = true;
-            if (currentType != -1) 
+            if (currentType != -1)
             {
                 advance();
             }
         }
     }
 
-    void recordError() 
+    void recordError()
     {
         if (currentType != -1) { // 不是EOF才记录错误
             errorLines.push_back(currentToken.second);
         }
         hasError = true;
-        if (currentType != -1) 
+        if (currentType != -1)
         {
             advance();
         }
     }
 
     // 同步恢复函数 - 跳过token直到找到同步点
-    void syncTo(const vector<string>& syncTokens) 
+    void syncTo(const vector<string>& syncTokens)
     {
-		int n = syncTokens.size();
-        while (currentType != -1) 
+        int n = syncTokens.size();
+        while (currentType != -1)
         {
 
-            for (int i = 0; i < n;i++) 
+            for (int i = 0; i < n; i++)
             {
-                if (currentToken.first == syncTokens[i]) 
+                if (currentToken.first == syncTokens[i])
                 {
                     return;
                 }
             }
+            // 保留遇到 '}' 或 ';' 时也可能是合适的同步点
             if (currentToken.first == ";" || currentToken.first == "}")
             {
                 return;
@@ -242,20 +243,20 @@ private:
     }
 
 public:
-    Parser(queue<pair<string, int>>& t) : tokens(t), hasError(false) 
+    Parser(queue<pair<string, int>>& t) : tokens(t), hasError(false)
     {
-        if (!tokens.empty()) 
+        if (!tokens.empty())
         {
             advance();
         }
-        else 
+        else
         {
             currentToken = { "EOF", -1 };
             currentType = -1;
         }
     }
 
-    bool parse() 
+    bool parse()
     {
         CompUnit();
         return !hasError && tokens.empty();
@@ -263,9 +264,9 @@ public:
 
 private:
     // 编译单元 CompUnit → FuncDef+
-    void CompUnit() 
+    void CompUnit()
     {
-        while (currentToken.first == "int" || currentToken.first == "void") 
+        while (currentToken.first == "int" || currentToken.first == "void")
         {
             FuncDef();
         }
@@ -274,142 +275,102 @@ private:
         }
     }
 
-    // 函数定义 FuncDef → ("int" | "void") ID "(" (Param ("." Param)*)? ")" Block
-    void FuncDef() 
+    // 函数定义 FuncDef → ("int" | "void") ID "(" (Param ("," Param)*)? ")" Block
+    void FuncDef()
     {
         // 返回类型
-        if (currentToken.first == "int" || currentToken.first == "void") 
+        if (currentToken.first == "int" || currentToken.first == "void")
         {
             advance();
         }
-        else 
+        else
         {
             recordError();
-            syncTo({ "int", "void", "EOF" });
+            // 同步到下一个可能的函数定义
+            syncTo({ "int","void" });
             return;
         }
 
         // 函数名
-        if (currentType == 1) 
+        if (currentType == 1)
         { // ID类型
             advance();
         }
-        else 
+        else
         {
             recordError();
-            syncTo({ "int", "void", "EOF" });
+            // 同步到下一个可能的函数定义
+            syncTo({ "int","void" });
             return;
         }
 
         // 参数列表
-        if (!match("("))
-        {
-            recordError();
-            // 如果缺少(，尝试寻找{来开始函数体
-            syncTo({ "{", "int", "void", "EOF" });
-            if (currentToken.first == "{")
-            {
-                Block();
-            }
-            return;
-        }
+        expect("(");
 
-        if (currentToken.first == "int") 
+        if (currentToken.first == "int")
         {
             Param();
-            while (match(",")) 
+            while (match(","))
             {
                 Param();
             }
         }
 
-        if (!match(")"))
-        {
-            recordError();
-            // 如果缺少)，尝试寻找{来开始函数体
-            syncTo({ "{", "int", "void", "EOF" });
-            if (currentToken.first == "{")
-            {
-                Block();
-            }
-            return;
-        }
+        expect(")");
         Block();
     }
 
     // 形参 Param → "int" ID
-    void Param() 
+    void Param()
     {
         expect("int");
-        if (currentType == 1) 
+        if (currentType == 1)
         { // ID类型
             advance();
         }
-        else 
+        else
         {
             recordError();
         }
     }
 
     // 语句块 Block → "{" Stmt* "}"
-    void Block() 
+    void Block()
     {
-        if (!match("{"))
+        expect("{");
+        while (currentToken.first != "}" && currentType != -1)
         {
-            recordError();
-            // 如果缺少{，尝试寻找下一个函数定义或文件结束
-            syncTo({ "int", "void", "EOF" });
-            return;
-        }
-
-        while (currentToken.first != "}" && currentType != -1) 
-        {
-            if (currentToken.first == "int" || currentToken.first == "void" || currentToken.first == "EOF")
-            {
-                break;
-            }
             Stmt();
+            if (currentToken.first == "EOF") break;
         }
-
-        if (!match("}"))
-        {
-            recordError();
-            // 如果缺少}，同步到下一个函数定义
-            syncTo({ "int", "void", "EOF" });
-        }
+        expect("}");
     }
 
     // 语句 Stmt
-    void Stmt() 
+    void Stmt()
     {
-        if (currentToken.first == "{" || currentToken.first == "}" ||currentToken.first == "int" || currentToken.first == "void" ||currentToken.first == "EOF")
-        {
-            return;
-        }
-
-
-        if (currentToken.first == "{") 
+        if (currentToken.first == "{")
         {
             Block();
         }
-        else if (currentToken.first == ";") 
+        else if (currentToken.first == ";")
         {
             advance(); // 空语句
         }
-        else if (currentToken.first == "if") 
+        else if (currentToken.first == "if")
         {
             advance();
             expect("(");
             Expr();
             expect(")");
             Stmt();
-            if (currentToken.first == "else") 
+            if (currentToken.first == "else")
             {
                 advance();
                 Stmt();
             }
         }
-        else if (currentToken.first == "while") 
+        else if (currentToken.first == "while")
         {
             advance();
             expect("(");
@@ -417,29 +378,29 @@ private:
             expect(")");
             Stmt();
         }
-        else if (currentToken.first == "break" || currentToken.first == "continue") 
+        else if (currentToken.first == "break" || currentToken.first == "continue")
         {
             advance();
             expect(";");
         }
-        else if (currentToken.first == "return") 
+        else if (currentToken.first == "return")
         {
             advance();
-            if (currentToken.first != ";") 
+            if (currentToken.first != ";")
             {
                 Expr();
             }
             expect(";");
         }
-        else if (currentToken.first == "int") 
+        else if (currentToken.first == "int")
         {
             advance(); // int
-            if (currentToken.first != "(" && currentToken.first != ")" &&currentToken.first != "{" && currentToken.first != "}" &&
-                currentToken.first != ";" && currentToken.first != "EOF") 
+            if (currentToken.first != "(" && currentToken.first != ")" && currentToken.first != "{" && currentToken.first != "}" &&
+                currentToken.first != ";" && currentToken.first != "EOF")
             {
                 advance();
             }
-            else 
+            else
             {
                 recordError();
                 syncTo({ ";", "}", "EOF" });
@@ -449,27 +410,27 @@ private:
             Expr();
             expect(";");
         }
-        else if (currentToken.first != "(" && currentToken.first != ")" &&currentToken.first != "{" && currentToken.first != "}" 
-            &&currentToken.first != ";" && currentToken.first != "EOF")
+        else if (currentToken.first != "(" && currentToken.first != ")" && currentToken.first != "{" && currentToken.first != "}" &&
+            currentToken.first != ";" && currentToken.first != "EOF")
         {
             // 可能是赋值或函数调用或表达式
             string id = currentToken.first;
             advance();
 
-            if (currentToken.first == "=") 
+            if (currentToken.first == "=")
             {
                 advance(); // =
                 Expr();
                 expect(";");
             }
-            else if (currentToken.first == "(") 
+            else if (currentToken.first == "(")
             {
                 // 函数调用
                 advance(); // (
-                if (currentToken.first != ")") 
+                if (currentToken.first != ")")
                 {
                     Expr();
-                    while (match(",")) 
+                    while (match(","))
                     {
                         Expr();
                     }
@@ -477,13 +438,12 @@ private:
                 expect(")");
                 expect(";");
             }
-            else 
+            else
             {
                 // 表达式语句
-                // 回退一个token，因为Expr需要从当前token开始
                 queue<pair<string, int>> temp;
                 temp.push({ id, currentToken.second });
-                while (!tokens.empty()) 
+                while (!tokens.empty())
                 {
                     temp.push(tokens.front());
                     tokens.pop();
@@ -495,15 +455,16 @@ private:
                 expect(";");
             }
         }
-        else 
+        else
         {
-            recordError();
-            syncTo({ ";", "}", "int", "void", "EOF" });
+            // 表达式语句
+            Expr();
+            expect(";");
         }
     }
 
     // 表达式 Expr → LOrExpr
-    void Expr() 
+    void Expr()
     {
         LOrExpr();
     }
@@ -511,7 +472,7 @@ private:
     // 逻辑或表达式 LOrExpr → LAndExpr | LOrExpr "||" LAndExpr
     void LOrExpr() {
         LAndExpr();
-        while (currentToken.first == "||") 
+        while (currentToken.first == "||")
         {
             advance();
             LAndExpr();
@@ -519,10 +480,10 @@ private:
     }
 
     // 逻辑与表达式 LAndExpr → RelExpr | LAndExpr "&&" RelExpr
-    void LAndExpr() 
+    void LAndExpr()
     {
         RelExpr();
-        while (currentToken.first == "&&") 
+        while (currentToken.first == "&&")
         {
             advance();
             RelExpr();
@@ -530,11 +491,11 @@ private:
     }
 
     // 关系表达式 RelExpr → AddExpr | RelExpr ("<" | ">" | "<=" | ">=" | "==" | "!=") AddExpr
-    void RelExpr() 
+    void RelExpr()
     {
         AddExpr();
-        while (currentToken.first == "<" || currentToken.first == ">" || currentToken.first == "<=" ||currentToken.first == ">=" 
-            || currentToken.first == "==" || currentToken.first == "!=") 
+        while (currentToken.first == "<" || currentToken.first == ">" || currentToken.first == "<=" || currentToken.first == ">="
+            || currentToken.first == "==" || currentToken.first == "!=")
         {
             advance();
             AddExpr();
@@ -542,10 +503,10 @@ private:
     }
 
     // 加减表达式 AddExpr → MulExpr | AddExpr ("+" | "-") MulExpr
-    void AddExpr() 
+    void AddExpr()
     {
         MulExpr();
-        while (currentToken.first == "+" || currentToken.first == "-") 
+        while (currentToken.first == "+" || currentToken.first == "-")
         {
             advance();
             MulExpr();
@@ -553,10 +514,10 @@ private:
     }
 
     // 乘除模表达式 MulExpr → UnaryExpr | MulExpr ("*" | "/" | "%") UnaryExpr
-    void MulExpr() 
+    void MulExpr()
     {
         UnaryExpr();
-        while (currentToken.first == "*" || currentToken.first == "/" || currentToken.first == "%") 
+        while (currentToken.first == "*" || currentToken.first == "/" || currentToken.first == "%")
         {
             advance();
             UnaryExpr();
@@ -564,42 +525,42 @@ private:
     }
 
     // 一元表达式 UnaryExpr → PrimaryExpr | ("+" | "-" | "!") UnaryExpr
-    void UnaryExpr() 
+    void UnaryExpr()
     {
-        if (currentToken.first == "+" || currentToken.first == "-" || currentToken.first == "!") 
+        if (currentToken.first == "+" || currentToken.first == "-" || currentToken.first == "!")
         {
             advance();
             UnaryExpr();
         }
-        else 
+        else
         {
             PrimaryExpr();
         }
     }
 
     // 基本表达式 PrimaryExpr → ID | NUMBER | "(" Expr ")" | ID "(" (Expr ("," Expr)*)? ")"
-    void PrimaryExpr() 
+    void PrimaryExpr()
     {
-        if (currentToken.first == "(") 
+        if (currentToken.first == "(")
         {
             advance(); // (
             Expr();
             expect(")");
         }
-        else if (currentToken.first != "(" && currentToken.first != ")" &&currentToken.first != "{" && currentToken.first != "}" &&
-            currentToken.first != ";" && currentToken.first != "," &&currentToken.first != "EOF") 
+        else if (currentToken.first != "(" && currentToken.first != ")" && currentToken.first != "{" && currentToken.first != "}" &&
+            currentToken.first != ";" && currentToken.first != "," && currentToken.first != "EOF")
         {
             string id = currentToken.first;
             advance();
 
-            if (currentToken.first == "(") 
+            if (currentToken.first == "(")
             {
                 // 函数调用
                 advance(); // (
-                if (currentToken.first != ")") 
+                if (currentToken.first != ")")
                 {
                     Expr();
-                    while (match(",")) 
+                    while (match(","))
                     {
                         Expr();
                     }
@@ -607,29 +568,29 @@ private:
                 expect(")");
             }
         }
-        else 
+        else
         {
             recordError();
         }
     }
 };
 
-void syntaxAnalysis() 
+void syntaxAnalysis()
 {
     Parser parser(tokens);
     bool success = parser.parse();
 
-    if (success) 
+    if (success)
     {
         cout << "accept" << endl;
     }
-    else 
+    else
     {
         cout << "reject" << endl;
         sort(errorLines.begin(), errorLines.end());
         errorLines.erase(unique(errorLines.begin(), errorLines.end()), errorLines.end());
-		int n = errorLines.size();
-        for (int i=0;i< n;i++) 
+        int n = errorLines.size();
+        for (int i = 0; i < n; i++)
         {
             cout << errorLines[i] << endl;
         }
@@ -638,16 +599,16 @@ void syntaxAnalysis()
 
 int main()
 {
-	int row = 1;
-	bool notation = 0;
+    int row = 1;
+    bool notation = 0;
 
-	string code;
-	while (getline(cin, code)) 
+    string code;
+    while (getline(cin, code))
     {
-		compile(code, row, notation);
-		row++;
-	}
+        compile(code, row, notation);
+        row++;
+    }
     syntaxAnalysis();
 
-	return 0;
+    return 0;
 }
