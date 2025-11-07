@@ -20,12 +20,14 @@ void compile(string code, int row, bool& notation)
         char c = code[i];
         if (notation)
         {
-            while (i < n && (code[i] != '*' || code[i + 1] != '/'))
-                i++;
-            if (i + 1 < n && code[i] == '*' && code[i + 1] == '/')
+            for (; i < n; ++i)
             {
-                i += 2;
-                notation = 0;
+                if (code[i] == '*' && i + 1 < n && code[i + 1] == '/')
+                {
+                    i += 2;
+                    notation = 0;
+                    break;
+                }
             }
             continue;
         }
@@ -200,23 +202,16 @@ private:
                 errorLines.push_back(currentToken.second);
             }
             hasError = true;
-            if (currentType != -1)
-            {
-                advance();
-            }
         }
     }
 
     void recordError()
     {
-        if (currentType != -1) { // 不是EOF才记录错误
-            errorLines.push_back(currentToken.second);
+        if (currentType != -1) {
+            if (errorLines.empty() || errorLines.back() != currentToken.second)
+                errorLines.push_back(currentToken.second);
         }
         hasError = true;
-        if (currentType != -1)
-        {
-            advance();
-        }
     }
 
     // 同步恢复函数 - 跳过token直到找到同步点
@@ -605,7 +600,6 @@ int main()
     string code;
     while (getline(cin, code))
     {
-        cout<<code<<endl;
         compile(code, row, notation);
         row++;
     }
@@ -613,4 +607,3 @@ int main()
 
     return 0;
 }
-
