@@ -233,6 +233,10 @@ private:
                     return;
                 }
             }
+            if (currentToken.first == ";" || currentToken.first == "}")
+            {
+                return;
+            }
             advance();
         }
     }
@@ -281,6 +285,7 @@ private:
         else 
         {
             recordError();
+            syncTo({ "int", "void", "EOF" });
             return;
         }
 
@@ -292,11 +297,22 @@ private:
         else 
         {
             recordError();
+            syncTo({ "int", "void", "EOF" });
             return;
         }
 
         // 参数列表
-        expect("(");
+        if (!match("("))
+        {
+            recordError();
+            // 如果缺少(，尝试寻找{来开始函数体
+            syncTo({ "{", "int", "void", "EOF" });
+            if (currentToken.first == "{")
+            {
+                Block();
+            }
+            return;
+        }
 
         if (currentToken.first == "int") 
         {
@@ -307,7 +323,17 @@ private:
             }
         }
 
-        expect(")");
+        if (!match(")"))
+        {
+            recordError();
+            // 如果缺少)，尝试寻找{来开始函数体
+            syncTo({ "{", "int", "void", "EOF" });
+            if (currentToken.first == "{")
+            {
+                Block();
+            }
+            return;
+        }
         Block();
     }
 
@@ -328,18 +354,40 @@ private:
     // 语句块 Block → "{" Stmt* "}"
     void Block() 
     {
-        expect("{");
+        if (!match("{"))
+        {
+            recordError();
+            // 如果缺少{，尝试寻找下一个函数定义或文件结束
+            syncTo({ "int", "void", "EOF" });
+            return;
+        }
+
         while (currentToken.first != "}" && currentType != -1) 
         {
+            if (currentToken.first == "int" || currentToken.first == "void" || currentToken.first == "EOF")
+            {
+                break;
+            }
             Stmt();
-            if (currentToken.first == "EOF") break;
         }
-        expect("}");
+
+        if (!match("}"))
+        {
+            recordError();
+            // 如果缺少}，同步到下一个函数定义
+            syncTo({ "int", "void", "EOF" });
+        }
     }
 
     // 语句 Stmt
     void Stmt() 
     {
+        if (currentToken.first == "{" || currentToken.first == "}" ||currentToken.first == "int" || currentToken.first == "void" ||currentToken.first == "EOF")
+        {
+            return;
+        }
+
+
         if (currentToken.first == "{") 
         {
             Block();
@@ -401,8 +449,8 @@ private:
             Expr();
             expect(";");
         }
-        else if (currentToken.first != "(" && currentToken.first != ")" &&currentToken.first != "{" && currentToken.first != "}" &&
-            currentToken.first != ";" && currentToken.first != "EOF") 
+        else if (currentToken.first != "(" && currentToken.first != ")" &&currentToken.first != "{" && currentToken.first != "}" 
+            &&currentToken.first != ";" && currentToken.first != "EOF")
         {
             // 可能是赋值或函数调用或表达式
             string id = currentToken.first;
@@ -449,9 +497,8 @@ private:
         }
         else 
         {
-            // 表达式语句
-            Expr();
-            expect(";");
+            recordError();
+            syncTo({ ";", "}", "int", "void", "EOF" });
         }
     }
 
@@ -597,7 +644,6 @@ int main()
 	string code;
 	while (getline(cin, code)) 
     {
-		cout<<code<<endl;
 		compile(code, row, notation);
 		row++;
 	}
@@ -605,4 +651,3 @@ int main()
 
 	return 0;
 }
-
