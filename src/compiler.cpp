@@ -463,6 +463,7 @@ int main()
 
 	string code;
 	while (getline(cin, code)) {
+		cout<<code<<endl;
 		compile(code, row, notation);
 		row++;
 	}
@@ -470,5 +471,6 @@ int main()
 
 	return 0;
 }
+
 
 
