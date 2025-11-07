@@ -14,12 +14,13 @@ vector<int> errorLines;
 void compile(string code, int row, bool& notation)
 {
 	int i = 0;
-	while (i < code.length())
+	int n = code.length();
+	while (i < n)
 	{
 		char c = code[i];
 		if (notation)
 		{
-			while (i < code.length() && (code[i] != '*' || code[i + 1] != '/'))
+			while (i < n && (code[i] != '*' || code[i + 1] != '/'))
 				i++;
 			if (code[i] == '*' && code[i + 1] == '/')
 			{
@@ -37,7 +38,7 @@ void compile(string code, int row, bool& notation)
 		else if (isalpha(c) || c == '_')
 		{
 			string id;
-			while ((i < code.length()) && (isalnum(code[i]) || code[i] == '_'))
+			while ((i<n) && (isalnum(code[i]) || code[i] == '_'))
 			{
 				id += code[i];
 				i++;
@@ -56,7 +57,7 @@ void compile(string code, int row, bool& notation)
 		else if (isdigit(c))
 		{
 			string number;
-			while (i < code.length() && isdigit(code[i]))
+			while (i < n && isdigit(code[i]))
 			{
 				number += code[i];
 				i++;
@@ -67,7 +68,7 @@ void compile(string code, int row, bool& notation)
 		else if (c == '>' || c == '<' || c == '=' || c == '!')
 		{
 			string op;
-			if (i + 1 < code.length() && code[i + 1] == '=')
+			if (i + 1 < n && code[i + 1] == '=')
 			{
 				op = code.substr(i, 2);
 				i += 2;
@@ -83,7 +84,7 @@ void compile(string code, int row, bool& notation)
 		else if (c == '|' || c == '&')
 		{
 			string op;
-			if (i + 1 < code.length() && code[i + 1] == c)
+			if (i + 1 < n && code[i + 1] == c)
 			{
 				op = string(2, c);
 				i += 2;
@@ -101,7 +102,7 @@ void compile(string code, int row, bool& notation)
 			i++;
 			if (code[i] == '/')//单行注释
 			{
-				while (i < code.length() && code[i] != '\n')
+				while (i < n && code[i] != '\n')
 					i++;
 			}
 			else if (code[i] == '*')//多行注释
@@ -221,9 +222,11 @@ private:
     // 同步恢复函数 - 跳过token直到找到同步点
     void syncTo(const vector<string>& syncTokens) 
     {
+		int n = syncTokens.size();
         while (currentType != -1) 
         {
-            for (int i = 0; i < syncTokens.size();i++) 
+
+            for (int i = 0; i < n;i++) 
             {
                 if (currentToken.first == syncTokens[i]) 
                 {
@@ -530,46 +533,6 @@ private:
     // 基本表达式 PrimaryExpr → ID | NUMBER | "(" Expr ")" | ID "(" (Expr ("," Expr)*)? ")"
     void PrimaryExpr() 
     {
-        if (currentType == 1) 
-        { // ID类型
-            string id = currentToken.first;
-            advance();
-
-            if (currentToken.first == "(") 
-            {
-                // 函数调用
-                advance(); // (
-                if (currentToken.first != ")") 
-                {
-                    Expr();
-                    while (match(",")) 
-                    {
-                        Expr();
-                    }
-                }
-                expect(")");
-            }
-            // 否则就是变量引用，不需要额外处理
-        }
-        else if (currentType == 0) 
-        { // NUMBER类型
-            advance();
-        }
-        else if (currentToken.first == "(") 
-        {
-            advance(); // (
-            Expr();
-            expect(")");
-        }
-        else 
-        {
-            recordError();
-        }
-    }
-
-    // 基本表达式 PrimaryExpr → ID | NUMBER | "(" Expr ")" | ID "(" (Expr ("," Expr)*)? ")"
-    void PrimaryExpr() 
-    {
         if (currentToken.first == "(") 
         {
             advance(); // (
@@ -618,7 +581,8 @@ void syntaxAnalysis()
         cout << "reject" << endl;
         sort(errorLines.begin(), errorLines.end());
         errorLines.erase(unique(errorLines.begin(), errorLines.end()), errorLines.end());
-        for (int i=0;i< errorLines.size();i++) 
+		int n = errorLines.size();
+        for (int i=0;i< n;i++) 
         {
             cout << errorLines[i] << endl;
         }
